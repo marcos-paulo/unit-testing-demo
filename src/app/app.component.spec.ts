@@ -33,9 +33,15 @@ describe('AppComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should have app-navbar', () => {});
+  it('should have app-nav-bar', () => {
+    expect(fixture.debugElement.query(By.css('app-nav-bar'))).toBeTruthy();
+  });
 
-  it('should have app-products', () => {});
+  it('should have app-products', () => {
+    expect(fixture.debugElement.query(By.css('app-products'))).toBeTruthy();
+  });
 
-  it('should test sum of two numbers', () => {});
+  it('should test sum of two numbers', () => {
+    expect(component.add(1, 2)).toBe(3);
+  });
 });

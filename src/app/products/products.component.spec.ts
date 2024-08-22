@@ -45,18 +45,88 @@ describe('ProductsComponent', () => {
   });
 
   describe('should test get products initially', () => {
-    it('should get product data initially', () => {});
+    it('should get product data initially', () => {
+      component.ngOnInit();
+      expect(mockProductService.getProducts).toHaveBeenCalled();
+    });
 
-    it('should get product data initially on failure', () => {});
+    it('should get product data initially on failure', () => {
+      mockProductService.getProducts.and.returnValue(
+        throwError(() => new Error('Error'))
+      );
+      component.ngOnInit();
+      expect(matSnackBar.open).toHaveBeenCalledWith(
+        'Something went wrong!...',
+        '',
+        { duration: 3000 }
+      );
+    });
   });
 
-  it('should test openDialog', () => {});
+  it('should test openDialog', () => {
+    component.openDialog();
+    expect(dialog.open).toHaveBeenCalledWith(AddProductComponent, {
+      width: '40%',
+    });
+  });
 
-  it('should test editDialog', () => {});
+  it('should test editDialog', () => {
+    const product = {
+      id: '1',
+      category: 'Electronics',
+      description: 'A brand new laptop',
+      price: '500',
+      title: 'Laptop',
+      image: 'laptop.jpg',
+    } as Product;
+    component.editProduct(product);
+    expect(dialog.open).toHaveBeenCalledWith(AddProductComponent, {
+      data: product,
+      width: '40%',
+    });
+  });
 
   describe('should test deleteProduct', () => {
-    it('should test deleteProduct on success', () => {});
+    it('should test deleteProduct on success', () => {
+      const product = {
+        id: '1',
+        category: 'Electronics',
+        description: 'A brand new laptop',
+        price: '500',
+        title: 'Laptop',
+        image: 'laptop.jpg',
+      } as Product;
+      mockProductService.deleteProduct.and.returnValue(of({}));
+      component.deleteProduct(product);
+      expect(mockProductService.deleteProduct).toHaveBeenCalledWith('1');
+      expect(matSnackBar.open).toHaveBeenCalledWith(
+        'Deleted Successfully!...',
+        '',
+        { duration: 3000 }
+      );
+    });
 
-    it('should test deleteProduct on failure', () => {});
+    it('should test deleteProduct on failure', () => {
+      const product = {
+        id: '1',
+        category: 'Electronics',
+        description: 'A brand new laptop',
+        price: '500',
+        title: 'Laptop',
+        image: 'laptop.jpg',
+      } as Product;
+      mockProductService.deleteProduct.and.returnValue(
+        throwError(() => new Error('Error'))
+      );
+      component.deleteProduct(product);
+      expect(mockProductService.deleteProduct).toHaveBeenCalledWith('1');
+      expect(matSnackBar.open).toHaveBeenCalledWith(
+        'Something went wrong!...',
+        '',
+        {
+          duration: 3000,
+        }
+      );
+    });
   });
 });
